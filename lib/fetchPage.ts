@@ -36,5 +36,9 @@ export const fetchStrava = async (cafeteria: string) => {
             parsedOrders.push(currentDay);
         }
         return parsedOrders;
+    } else {
+        if (stravaResp.status === 500) {
+            return 'Not found';
+        }
     }
 }
