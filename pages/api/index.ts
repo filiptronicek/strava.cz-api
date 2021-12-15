@@ -4,7 +4,7 @@ import { fetchStrava } from '../../lib/fetchPage';
 
 type Data = {
   status: 'error' | 'success';
-  result: string | undefined;
+  result: any;
 }
 
 export default async function handler(
