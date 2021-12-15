@@ -1,12 +1,13 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
+import { fetchStrava } from '../../lib/fetchPage';
 
 type Data = {
   status: 'error' | 'success';
-  result: string;
+  result: string | undefined;
 }
 
-export default function handler(
+export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
@@ -16,6 +17,7 @@ export default function handler(
   }
   if (typeof cafeteria === "object") {
     res.status(400).json({ status: 'error', result: 'Pleas only provide the cafeteria parameter once' });
+    return;
   }
-  res.status(200).json({ status: 'success', result: 'LGTM' });
+  res.status(200).json({ status: 'success', result: (await fetchStrava(cafeteria)) });
 }
