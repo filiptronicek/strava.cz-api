@@ -1,6 +1,5 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import type { NextApiRequest, NextApiResponse } from 'next'
-import { fetchStrava } from '../../lib/fetchPage';
+import type { NextApiRequest, NextApiResponse } from 'next';
+import { fetchAnon } from '../../lib/fetchPage';
 
 type Data = {
   status: 'error' | 'success';
@@ -19,5 +18,5 @@ export default async function handler(
     res.status(400).json({ status: 'error', result: 'Pleas only provide the cafeteria parameter once' });
     return;
   }
-  res.status(200).json({ status: 'success', result: (await fetchStrava(cafeteria)) });
+  res.status(200).json({ status: 'success', result: (await fetchAnon(cafeteria)) });
 }
