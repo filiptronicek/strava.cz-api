@@ -18,5 +18,11 @@ export default async function handler(
     res.status(400).json({ status: 'error', result: 'Pleas only provide the cafeteria parameter once' });
     return;
   }
-  res.status(200).json({ status: 'success', result: (await fetchAnon(cafeteria)) });
+
+  try {
+    const result = await fetchAnon(cafeteria);
+    res.status(200).json({ status: 'success', result });
+  } catch (e) {
+    res.status(500).json({ status: 'error', result: e })
+  }
 }
