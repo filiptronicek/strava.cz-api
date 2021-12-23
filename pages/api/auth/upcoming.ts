@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import xml from "xml2json";
+import { endpoint } from "../../../lib/constants";
 
 type Data = {
   status: "error" | "success";
@@ -33,14 +34,11 @@ export default async function handler(
     }
   }
 
-  const endpoint =
-    "https://wss52.strava.cz/WSStravne5/WSStravne5.svc/XMLService";
   try {
     const response = await fetch(
       `${endpoint}/WSORozpisObjednavek?uzivatelWS=StravaCZ&hesloWS=6xgM6IEE&databaze=${canteen}&SID=${token}&podminka=`
     );
     const data: UpcomingOrdersResponse = await response.json();
-    console.log(data);
     if (data.WSORozpisObjednavekResult === 0) {
       const result = JSON.parse(xml.toJson(data.objednavky));
       res

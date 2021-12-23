@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import xml from 'xml2json';
+import { endpoint } from "../../lib/constants";
 
 type Data = {
   status: "error" | "success";
@@ -19,8 +20,6 @@ export default async function handler(
   _req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  const endpoint =
-    "https://wss52.strava.cz/WSStravne5/WSStravne5.svc/XMLService";
   try {
     const response = await fetch(
       `${endpoint}/WSOSeznamPZarizeni?AutUzivatelWS=IOSA01&AutHesloSW=CeXkKXZbILh4bjix&Zarizeni=&Polozky=V_NAZEV,V_MESTO,V_PSC,V_ULICE,REZIM_UZI`
