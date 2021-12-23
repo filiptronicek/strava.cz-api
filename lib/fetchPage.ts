@@ -11,29 +11,6 @@ interface Order {
     foodChoices: Food[]
 }
 
-export const getAuthedLunchList = async (username: string, password: string, canteen: string) => {
-    const loginResp = await fetch('https://www.strava.cz/Strava/Stravnik/prihlaseni', {
-        method: "POST",
-        body: JSON.stringify({
-            uzivatel: username,
-            heslo: password,
-            zarizeni: canteen
-        })
-    });
-    if (loginResp.ok) {
-        const lunchesResponse = await fetch('https://www.strava.cz/Strava5/Objednavky', {});
-        if (lunchesResponse.ok) {
-            const data = await lunchesResponse.text();
-            const root = parse(data);
-            return data;
-        } else {
-            throw new Error('Problem getting lunch list');
-        }
-    } else {
-        throw new Error('There was a problem authenticating you');
-    }
-}
-
 export const fetchAnon = async (cafeteria: string) => {
     const stravaResp = await fetch('https://www.strava.cz/Strava5/jidelnicky?tisk=True', {
         headers: {
