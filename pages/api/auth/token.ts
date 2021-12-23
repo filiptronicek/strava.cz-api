@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { endpoint } from "../../../lib/constants";
+import limiter from "../../../lib/rateLimit";
 
 type Data = {
   status: "error" | "success";
@@ -19,6 +20,16 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
+
+  try {
+    await limiter.check(res, 20, 'CACHE_TOKEN');
+  } catch {
+    res.status(429).json({
+      status: 'error',
+      result: 'Rate limit exceeded',
+    });
+  }
+
   const { canteen, username, password } = req.query;
   for (const param of [canteen, username, password]) {
     if (!param) {

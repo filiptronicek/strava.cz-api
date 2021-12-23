@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { fetchAnon } from '../../lib/fetchPage';
+import limiter from '../../lib/rateLimit';
 
 type Data = {
   status: 'error' | 'success';
@@ -10,6 +11,16 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
+
+  try {
+    await limiter.check(res, 69, 'CACHE_TOKEN');
+  } catch {
+    res.status(429).json({
+      status: 'error',
+      result: 'Rate limit exceeded',
+    });
+  }
+
   const { cafeteria } = req.query;
   if (!cafeteria) {
     res.status(400).json({ status: 'error', result: 'You need to provide a cafeteria parameter in the request' });

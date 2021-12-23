@@ -1,12 +1,26 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import xml from "xml2json";
 import { endpoint } from "../../../lib/constants";
-import { GenericAPIResponse, RawUpcomingOrdersResponse, UpcomingOrdersResult } from "../../../types";
+import limiter from "../../../lib/rateLimit";
+import {
+  GenericAPIResponse,
+  RawUpcomingOrdersResponse,
+  UpcomingOrdersResult,
+} from "../../../types";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<GenericAPIResponse>
 ) {
+  try {
+    await limiter.check(res, 69, "CACHE_TOKEN");
+  } catch {
+    res.status(429).json({
+      status: "error",
+      result: "Rate limit exceeded",
+    });
+  }
+
   const { canteen, token } = req.query;
   for (const param of [canteen, token]) {
     if (!param) {
@@ -31,7 +45,9 @@ export default async function handler(
     );
     const data: RawUpcomingOrdersResponse = await response.json();
     if (data.WSORozpisObjednavekResult === 0) {
-      const result: UpcomingOrdersResult = JSON.parse(xml.toJson(data.objednavky));
+      const result: UpcomingOrdersResult = JSON.parse(
+        xml.toJson(data.objednavky)
+      );
       res
         .status(200)
         .json({ status: "success", result: result.RozpisObjednavek });
