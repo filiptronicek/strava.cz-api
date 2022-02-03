@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { endpoint } from "../../../lib/constants";
 import limiter from "../../../lib/rateLimit";
+import xml from 'xml2json';
 
 type Data = {
   status: "error" | "success";
@@ -60,7 +61,7 @@ export default async function handler(
     if (result.WSOPrihlaseniUzivateleKomplet2Result === 0) {
       res
         .status(200)
-        .json({ status: "success", result: { token: result.aSID } });
+        .json({ status: "success", result: { token: result.aSID, user: JSON.parse(xml.toJson(result.xmlUzivatel)).VlastnostiUzivatele.Uzivatel } });
     } else {
       res
         .status(400)
