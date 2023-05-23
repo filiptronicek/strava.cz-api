@@ -4,7 +4,7 @@ module.exports = {
   async headers() {
     return [
       {
-        source: '/api/*',
+        source: '/api/(.*)',
         headers: [
           {
             key: 'Access-Control-Allow-Origin',
